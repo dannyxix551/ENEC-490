@@ -1,0 +1,83 @@
+#  Quantitative Ecology             
+#  Matrix population models           
+#  Daniel Nye
+#  2-19-2024
+
+#Load libraries
+
+#Set working directory
+library(tidyverse)
+library(deSolve)
+library(FME)
+
+
+#setwd("C:/Users/jnye/Dropbox (Personal)/Classes/Quantitative Ecology") #For desktop
+setwd("C:/Users/jnye/Dropbox/Classes/Quantitative Ecology") #For laptop
+
+#Import the csv file that has the lynx and hare data
+
+one<-read.csv("LynxHare.csv")
+
+#Plot the data
+plot(one$Year,one$hare,col="maroon",type="l")
+lines(one$Year,one$lynx,col="cyan")
+
+#I took the following code from https://strimas.com/post/lotka-volterra/
+#But I changed the parameters to match the letters I used in the notes
+
+# set values for your parameters
+# to help you understand the equation define the variables:
+# r=
+#beta=
+#delta=
+#q=
+pars <- c(r = 1, beta = 0.2, delta = 0.5, q = 0.2)
+
+# initial population size where V=victim or prey and P=predator
+init <- c(V = 1, P = 2)
+
+# set your time step with the seq command
+# here we create a sequence from 0 to 100 increasing by 1
+times <- seq(0, 100, by = 1)
+
+#I don't expect you to know how to write a function
+#But here we use a function that solves both dV and dP simultaneoulsy
+
+deriv <- function(t, state, pars) {
+  with(as.list(c(state, pars)), {
+    d_V <- r * V - beta * V * P           #Victim population growth
+    d_P <- delta * beta * V * P - q * P   #Predator population growth
+    return(list(c(V = d_V, P = d_P)))     #spits out the pop size at each time step
+  })
+}
+
+#ode is a function in R that solves for ordinary differential equations
+lv_results <- ode(init, times, deriv, pars)
+
+#you know me, I'm an old school "plot" kinda person
+#How is this plot different from the lynx and hare plot you just made?
+#Why is it different?  Be specific?
+plot(lv_results[,1],lv_results[,2],type="l",col="maroon",ylim=c(0,10))
+lines(lv_results[,1],lv_results[,3],col="cyan")
+
+#Here's some code using tidyverse to plot in ggplot 
+# I suggest using this code to answer the questions at the end because
+# this code prints the parameters at the top conveniently!
+lv_results %>% 
+  data.frame() %>% 
+  gather(var, pop, -time) %>% 
+  mutate(var = if_else(var == "V", "Prey", "Predator")) %>% 
+  ggplot(aes(x = time, y = pop)) +
+  geom_line(aes(color = var)) +
+  scale_color_brewer(NULL, palette = "Set1") +
+  labs(title = "Lotka-Volterra predator prey model",
+       subtitle = paste(names(pars), pars, sep = " = ", collapse = "; "),
+       x = "Time", y = "Population density")
+
+#Your assignment is now to do 4 simulations, changing each of one parameter
+#The simulations are to change r, beta, delta, and q 
+#print out your plot for each simulation, copy and paste into a word doc
+#copy and paste your plot into a word doc or ppt
+#For each figure, explain what changed and WHY
+#Due Tuesday 2/27 by 5pm 
+
