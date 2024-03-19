@@ -1,6 +1,6 @@
 #  Quantitative Ecology             
 #  Matrix population models           
-#  Daniel Nye
+#  Daniel Crownover
 #  2-19-2024
 
 #Load libraries
