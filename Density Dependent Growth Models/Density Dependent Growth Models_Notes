@@ -1,5 +1,5 @@
 #' The structure of the Logistic Model
-#'
+###Dan Crownover
 ##install.packages("settings")
 
 ##library(ggplot2)
