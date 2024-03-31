@@ -1,8 +1,5 @@
-#Exercise 3
-#Intro to Quantitative Ecology
+### Dan Crownover
 
-#For this exercise we are going to use a package written by Malcolm Haddon
-#He has written a book that teaches lots of quantitative methods:
 #Modelling and Quantitative Methods in Fisheries
 
 #First load packages
